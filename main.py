@@ -5,13 +5,13 @@ from transformers import BertConfig, BertForSequenceClassification, BertTokenize
 from prepare_dataset import Dataset
 
 #BERT_MODEL = 'bert-base-cased'
-BERT_MODEL = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//cased_L-12_H-768_A-12//cased_L-12_H-768_A-12'
+BERT_MODEL = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//cased_L-12_H-768_A-12//cased_L-12_H-768_A-12//'
 NUM_LABELS = 2
 EPOCHS = 1
 
 def train(df, text_field, label_field, epochs=5, model_dir='C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//save_model//'):
     #Load BERT model
-    config = BertConfig.from_pretrained(BERT_MODEL, num_labels=NUM_LABELS)
+    config = BertConfig.from_json_file(BERT_MODEL)
     tokenizer = BertTokenizer.from_pretrained(BERT_MODEL, do_lower_case=True)
     model = BertForSequenceClassification.from_pretrained(BERT_MODEL, config=config)
 
@@ -49,7 +49,11 @@ def predict(text, label_dict, model_dir="C://Users//Hammer//PycharmProjects//Ber
 
     #convert to BERT input
     dt = Dataset(tokenizer)
-    input_ids  =
+    input_ids = dt.convert_example(text)
+
+    #get result
+    result = predictor.predict(input_ids, mapping=label_dict)
+    return result
 
 
 
@@ -73,4 +77,7 @@ if __name__ == '__main__':
     pickle.dump(mapping, open(map_path + "mapping_labels.p", "wb"))
     pickle.dump(le, open(map_path + "encoder_labels.p", "wb"))
     df_train[label_field] = le.transform(df_train[label_col].to_list())
+
+    #train
+    train(df_train, text_field, label_field, epochs=EPOCHS, model_dir=BERT_MODEL)
 
