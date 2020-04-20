@@ -16,7 +16,7 @@ MAX_GRAD_NORM = 1.0
 SEED = 42
 DEVICE = "gpu"
 
-bert_dir = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//cased_L-12_H-768_A-12//cased_L-12_H-768_A-12//'
+bert_dir = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//cased_L-12_H-768_A-12//'
 
 
 class FinBERT:
@@ -108,7 +108,7 @@ class FinBERT:
 
     def load(self, model_dir=bert_dir):
         if not os.path.exists(model_dir):
-            raise FileNotFoundError("folder `{}` does not exist.".format(model_dir))
+            raise FileNotFoundError("folder `{}` does not exst.".format(model_dir))
 
         self.tokenizer = BertTokenizer.from_pretrained(model_dir)
         self.model = BertForSequenceClassification.from_pretrained(model_dir)
