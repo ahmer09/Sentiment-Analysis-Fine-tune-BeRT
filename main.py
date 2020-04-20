@@ -1,17 +1,29 @@
+import os
 import pandas as pd
 from sklearn import preprocessing
 import pickle
-from transformers import BertConfig, BertForSequenceClassification, BertTokenizer
+from transformers import BertConfig, BertForSequenceClassification, BertTokenizer, convert_bert_original_tf_checkpoint_to_pytorch
 from prepare_dataset import Dataset
 
 #BERT_MODEL = 'bert-base-cased'
-BERT_MODEL = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//cased_L-12_H-768_A-12//cased_L-12_H-768_A-12//'
+BERT_MODEL = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//cased_L-12_H-768_A-12//'
 NUM_LABELS = 2
 EPOCHS = 1
 
+BERT_BASE_DIR = BERT_MODEL
+file = BERT_BASE_DIR + 'pytorch_model.bin'
+
+if os.path.exists(file):
+    print("PyTorch version of bioBERT found")
+else:
+    print('Convert tf checkpoint to pyTorch')
+    convert_bert_original_tf_checkpoint_to_pytorch.convert_tf_checkpoint_to_pytorch(BERT_BASE_DIR + 'model.ckpt-1000000', BERT_BASE_DIR + 'bert_config.json' , BERT_BASE_DIR + 'pytorch_model.bin')
+
+
+
 def train(df, text_field, label_field, epochs=5, model_dir='C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//save_model//'):
     #Load BERT model
-    config = BertConfig.from_json_file(BERT_MODEL)
+    config = BertConfig.from_json_file(BERT_MODEL+"//bert_config.json")
     tokenizer = BertTokenizer.from_pretrained(BERT_MODEL, do_lower_case=True)
     model = BertForSequenceClassification.from_pretrained(BERT_MODEL, config=config)
 
