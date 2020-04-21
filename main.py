@@ -4,6 +4,8 @@ from sklearn import preprocessing
 import pickle
 from transformers import BertConfig, BertForSequenceClassification, BertTokenizer, convert_bert_original_tf_checkpoint_to_pytorch
 from prepare_dataset import Dataset
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+from textblob_fr import PatternAnalyzer, PatternTagger
 
 #BERT_MODEL = 'bert-base-cased'
 BERT_MODEL = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//model//cased_L-12_H-768_A-12//'
@@ -66,6 +68,26 @@ def predict(text, label_dict, model_dir="C://Users//Hammer//PycharmProjects//Ber
     #get result
     result = predictor.predict(input_ids, mapping=label_dict)
     return result
+
+def get_sentiment_vader(text):
+    vader_analyser = SentimentIntensityAnalyzer()
+    vader_polarity = vader_analyser.polarity_scores(text)
+
+    if vader_polarity['compound'] >= 0.05:
+        sent = 1 # positive
+    else:
+        sent = 0 #negative
+    return vader_polarity, sent
+
+def get_sentiment_textblob(text):
+    textblob_analyser = TextBlob(text, pos_tagger = PatternTagger(), analyzer = PatternAnalyzer())
+    textblob_polarity = textblob_analyser.sentiment
+    if textblob_polarity[0] >= 0.0:
+        sent = 1
+    else:
+        sent = 0
+    return textblob_polarity, sent
+
 
 
 
