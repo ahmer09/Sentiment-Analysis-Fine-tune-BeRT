@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import DataLoader, RandomSampler, TensorDataset, SequentialSampler
 from tqdm import tqdm
 
+
 BATCH_SIZE = 8
 MAX_SEQUENCE_LENGTH = 128
 
@@ -33,7 +34,7 @@ class Dataset:
         dataloader = DataLoader(data, sampler=SequentialSampler(data), batch_size=BATCH_SIZE)
         return dataloader
 
-    def convert_to_dataloader_train(self, df, text_field='SentimentText', label_field='labels'):
+    def convert_to_dataloader_train(self, df, text_field='text', label_field='labels'):
         """Loads a data field in Torch Dataset"""
         num_samples = len(df)
         all_segment_ids = torch.zeros((num_samples, MAX_SEQUENCE_LENGTH), dtype=torch.long)

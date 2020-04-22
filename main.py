@@ -16,10 +16,10 @@ BERT_BASE_DIR = BERT_MODEL
 file = BERT_BASE_DIR + 'pytorch_model.bin'
 
 if os.path.exists(file):
-    print("PyTorch version of bioBERT found")
+    print("PyTorch version of BERT found")
 else:
     print('Convert tf checkpoint to pyTorch')
-    convert_bert_original_tf_checkpoint_to_pytorch.convert_tf_checkpoint_to_pytorch(BERT_BASE_DIR + 'model.ckpt-1000000', BERT_BASE_DIR + 'bert_config.json' , BERT_BASE_DIR + 'pytorch_model.bin')
+    convert_bert_original_tf_checkpoint_to_pytorch.convert_tf_checkpoint_to_pytorch(BERT_BASE_DIR + 'bert_model.ckpt', BERT_BASE_DIR + 'bert_config.json' , BERT_BASE_DIR + 'pytorch_model.bin')
 
 
 
@@ -94,14 +94,16 @@ def get_sentiment_textblob(text):
 if __name__ == '__main__':
 
     file = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//data//train_1.xlsx'
-    map_path = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//mapping'
+    map_path = 'C://Users//Hammer//PycharmProjects//Bert-fine-tune//mapping//   '
     df_train = pd.read_excel(file)
 
     text_field = 'SentimentText'
+    clean_text = 'text'
     label_col = 'Sentiment'
     label_field = 'labels'
 
     labels = df_train[label_col].to_list()
+    df_train["text"] = df_train[text_field].str.lstrip()
     le = preprocessing.LabelEncoder()
     le.fit(list(set(labels)))
     print('Class list: {}'.format(str(le.classes_)))
@@ -113,5 +115,5 @@ if __name__ == '__main__':
     df_train[label_field] = le.transform(df_train[label_col].to_list())
 
     #train
-    train(df_train, text_field, label_field, epochs=EPOCHS, model_dir=BERT_MODEL)
+    train(df_train, clean_text, label_field, epochs=EPOCHS, model_dir=BERT_MODEL)
 
